@@ -1,16 +1,14 @@
-use crate::algorithms::Algorithm; // Algorithm enumをインポート
+use crate::algorithms::Algorithm;
 use hex::encode;
 use sha2::{Digest, Sha256, Sha384, Sha512};
 use sha3::{Sha3_256, Sha3_384, Sha3_512};
 use std::fmt;
 
-// クロージャを使用してハッシュ処理を抽象化
 fn hash_with_algorithm<D: Digest>(data: &[u8], mut hasher: D) -> String {
     hasher.update(data);
     encode(hasher.finalize())
 }
 
-// `Algorithm` enumを使用して型安全性を向上
 pub fn calculate_hash(buffer: &[u8], algorithm: Algorithm) -> Result<String, HasherError> {
     let hasher = match algorithm {
         Algorithm::Sha2_256 => hash_with_algorithm::<Sha256>(buffer, Sha256::new()),

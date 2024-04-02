@@ -37,7 +37,7 @@ fn select_hash_algorithm() -> Result<Algorithm> {
         Algorithm::Sha3_384,
         Algorithm::Sha3_512,
     ];
-    let selection = Select::new()
+    let selection: usize = Select::new()
         .with_prompt("使用するハッシュアルゴリズムを選択してください")
         .default(0)
         .items(
@@ -51,16 +51,16 @@ fn select_hash_algorithm() -> Result<Algorithm> {
 }
 
 fn calculate_file_hash(file_path: &str, algorithm: Algorithm) -> Result<String> {
-    let file = File::open(file_path)?;
-    let mut reader = BufReader::new(file);
-    let mut buffer = Vec::new();
+    let file: File = File::open(file_path)?;
+    let mut reader: BufReader<File> = BufReader::new(file);
+    let mut buffer: Vec<u8> = Vec::new();
     reader.read_to_end(&mut buffer)?;
 
-    calculate_hash(&buffer, algorithm).map_err(|err| match err {
-        _ => io::Error::new(
+    calculate_hash(&buffer, algorithm).map_err(|_err| {
+        io::Error::new(
             io::ErrorKind::Other,
             "ハッシュ値の計算中に不明なエラーが発生しました。",
-        ),
+        )
     })
 }
 
